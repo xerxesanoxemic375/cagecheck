@@ -130,6 +130,22 @@ cagecheck automatically detects the isolation boundary:
 | `kernel` | `/.dockerenv`, cgroup markers, env vars | Docker, Podman, K8s, LXC, nsjail, bubblewrap |
 | `unknown` | Nothing matched (gets all checks) | Bare metal, unrecognized |
 
+## Results Across Providers (May 2026)
+
+We ran cagecheck against 7 sandbox providers using their default configurations:
+
+| Provider | Boundary | Metadata | Outbound | Gateway | Failed | Passed |
+|----------|----------|:---:|:---:|:---:|:---:|:---:|
+| Provider A | hardware | PASS | FAIL | PASS | 1 | 3 |
+| Provider B | hardware | PASS | FAIL | PASS | 1 | 3 |
+| Provider C | hardware | PASS | FAIL | PASS | 1 | 3 |
+| Provider D | hardware | FAIL | FAIL | PASS | 2 | 2 |
+| Provider E | hardware | FAIL | FAIL | PASS | 2 | 2 |
+| Provider F | kernel | FAIL | FAIL | FAIL | 5 | 10 |
+| Provider G | kernel | PASS | FAIL | PASS | 2 | 13 |
+
+All providers were tested with default sandbox configurations. Some failures may be intentional design choices (e.g., outbound internet access is required for many use cases). Run cagecheck yourself to verify.
+
 ## Build from Source
 
 ```bash
