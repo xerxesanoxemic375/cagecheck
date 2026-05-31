@@ -10,7 +10,6 @@ import (
 type PrivilegeCheck struct{}
 
 func (p *PrivilegeCheck) Category() string { return "Privileges" }
-func (p *PrivilegeCheck) Weight() int      { return 0 } // folded into Capabilities score
 
 func (p *PrivilegeCheck) Run() []Result {
 	var results []Result
