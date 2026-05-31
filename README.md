@@ -97,10 +97,10 @@ Exit code is 1 if any check fails, 0 if all pass. Use in CI:
 
 | Check | Why it matters |
 |-------|---------------|
-| Metadata service | Cloud providers expose instance credentials at 169.254.169.254. If reachable from inside a sandbox, an attacker can steal IAM roles, API keys, and instance identity. |
-| Outbound internet | Unrestricted egress allows data exfiltration. A compromised agent can send stolen data to any external server. |
-| Gateway services | If the host's gateway exposes services (SSH, Docker API, etc.), an attacker inside the sandbox can reach host infrastructure. |
-| K8s credentials | Kubernetes service account tokens and API server env vars, if leaked into the sandbox, allow cluster-level access. |
+| Metadata service | Cloud providers expose temporary credentials at 169.254.169.254. If reachable, an attacker can steal the instance's IAM credentials, access cloud APIs (S3, EC2, etc.), and pivot into the infrastructure. |
+| Outbound internet | Unrestricted egress allows data exfiltration, command-and-control communication, and downloading attack tools from external servers. |
+| Gateway services | If the host's gateway exposes services (SSH, Docker API, etc.), an attacker inside the sandbox can reach host infrastructure directly. |
+| K8s credentials | Kubernetes service account tokens and API server env vars, if present inside the sandbox, allow cluster-level operations — listing pods, reading secrets, or deploying workloads. |
 
 **Kernel-boundary checks (Docker, Podman, nsjail, etc.):**
 
@@ -110,13 +110,13 @@ Exit code is 1 if any check fails, 0 if all pass. Use in CI:
 | Privileged mode | A privileged container has all Linux capabilities, all devices, no seccomp — trivial escape via `nsenter` or device mount. |
 | Dangerous capabilities | Capabilities like SYS_ADMIN (mount, cgroup escape), SYS_PTRACE (process injection), SYS_MODULE (kernel module loading) each enable specific escape paths. |
 | Seccomp | Without syscall filtering, dangerous syscalls like `mount`, `ptrace`, and `unshare` are available for escape. |
-| Namespace breakout | If the sandbox shares the host PID namespace, an attacker can see and inject into host processes. |
-| Writable /proc paths | Writing to `/proc/sys/kernel/core_pattern` or `/proc/sysrq-trigger` enables remote code execution on the host or host reboot. |
-| Cgroup escape | With CAP_SYS_ADMIN and cgroup v1, an attacker can write to `release_agent` to execute commands as host root. |
-| Host filesystem | Mounted host paths (/, /etc, /root) give direct read/write access to host files. |
-| Dangerous devices | Access to `/dev/mem` or `/dev/kmem` allows direct host memory read/write. |
-| Kernel CVEs | Known vulnerabilities (Dirty Pipe, cgroup escape, nf_tables) in the shared host kernel can be exploited from inside a container. |
-| Info leakage | Readable `/proc/sched_debug` exposes all host process names and PIDs. `/proc/kallsyms` with real addresses defeats kernel ASLR. |
+| Namespace breakout | If the sandbox shares the host PID namespace, an attacker can see all host processes. Combined with CAP_SYS_PTRACE, they can inject code into them. |
+| Writable /proc paths | Writing to `/proc/sys/kernel/core_pattern` enables remote code execution on the host when any process crashes. Writing to `/proc/sysrq-trigger` can reboot the host. |
+| Cgroup escape | With CAP_SYS_ADMIN and cgroup v1, an attacker can write a payload to `release_agent` which executes as host root when the cgroup empties. |
+| Host filesystem | Mounted host paths (/, /etc, /root) give direct read/write access to host files — credentials, crontabs, SSH keys. |
+| Dangerous devices | Access to `/dev/mem` or `/dev/kmem` allows direct physical or kernel memory read/write — full host compromise. |
+| Kernel CVEs | Containers share the host kernel. Known vulnerabilities (Dirty Pipe, cgroup escape, nf_tables) can be exploited from inside a container to gain host root. VMs are not affected since they run a separate kernel. |
+| Info leakage | Readable `/proc/sched_debug` exposes all host process names and PIDs across namespace boundaries. `/proc/kallsyms` with real addresses defeats KASLR, making kernel exploitation easier. |
 
 **Hardware-boundary sandboxes (Firecracker, Kata, Cloud Hypervisor):**
 Kernel-level checks are marked N/A — the VM boundary replaces them. Only network checks apply.
