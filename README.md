@@ -134,15 +134,26 @@ cagecheck automatically detects the isolation boundary:
 
 We ran cagecheck against 7 sandbox providers using their default configurations:
 
-| Provider | Boundary | Metadata | Outbound | Gateway | Failed | Passed |
-|----------|----------|:---:|:---:|:---:|:---:|:---:|
-| Provider A | hardware | PASS | FAIL | PASS | 1 | 3 |
-| Provider B | hardware | PASS | FAIL | PASS | 1 | 3 |
-| Provider C | hardware | PASS | FAIL | PASS | 1 | 3 |
-| Provider D | hardware | FAIL | FAIL | PASS | 2 | 2 |
-| Provider E | hardware | FAIL | FAIL | PASS | 2 | 2 |
-| Provider F | kernel | FAIL | FAIL | FAIL | 5 | 10 |
-| Provider G | kernel | PASS | FAIL | PASS | 2 | 13 |
+| Check | A | B | C | D | E | F | G |
+|-------|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
+| **Boundary** | hardware | hardware | hardware | hardware | hardware | kernel | kernel |
+| Metadata service | PASS | PASS | PASS | FAIL | FAIL | FAIL | PASS |
+| Outbound internet | FAIL | FAIL | FAIL | FAIL | FAIL | FAIL | FAIL |
+| Gateway services | PASS | PASS | PASS | PASS | PASS | FAIL | PASS |
+| K8s credentials | PASS | PASS | PASS | PASS | PASS | PASS | PASS |
+| Runtime sockets | N/A | N/A | N/A | N/A | N/A | PASS | PASS |
+| Privileged mode | N/A | N/A | N/A | N/A | N/A | PASS | PASS |
+| Capabilities | N/A | N/A | N/A | N/A | N/A | PASS | PASS |
+| Seccomp | N/A | N/A | N/A | N/A | N/A | PASS | PASS |
+| Namespace breakout | N/A | N/A | N/A | N/A | N/A | FAIL | PASS |
+| Writable /proc | N/A | N/A | N/A | N/A | N/A | PASS | PASS |
+| Cgroup escape | N/A | N/A | N/A | N/A | N/A | PASS | PASS |
+| Host filesystem | N/A | N/A | N/A | N/A | N/A | FAIL | FAIL |
+| Dangerous devices | N/A | N/A | N/A | N/A | N/A | PASS | PASS |
+| Kernel CVEs | N/A | N/A | N/A | N/A | N/A | PASS | PASS |
+| Info leakage | N/A | N/A | N/A | N/A | N/A | PASS | PASS |
+| **Failed** | **1** | **1** | **1** | **2** | **2** | **5** | **2** |
+| **Passed** | **3** | **3** | **3** | **2** | **2** | **10** | **13** |
 
 All providers were tested with default sandbox configurations. Some failures may be intentional design choices (e.g., outbound internet access is required for many use cases). Run cagecheck yourself to verify.
 
